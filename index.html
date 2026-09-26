@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme de Quiz - Fascisme Italien</title>
+    <style>
+        /* Design Moderne Glassmorphism */
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: rgba(22, 31, 49, 0.75);
+            --bg-card-hover: rgba(33, 45, 71, 0.85);
+            --border-glow: rgba(99, 102, 241, 0.3);
+            --border-highlight: rgba(139, 92, 246, 0.5);
+            
+            --primary: #6366F1;
+            --primary-glow: #818CF8;
+            --accent: #A855F7;
+            --gold: #F59E0B;
+            --gold-glow: #FBBF24;
+            --success: #10B981;
+            --error: #EF4444;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+
+            --easy-color: #10B981;
+            --normal-color: #3B82F6;
+            --hard-color: #EC4899;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 20%, #1a1e36 0%, #080b12 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .glass-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-button {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border: 1px solid var(--border-glow);
+            color: var(--text-light);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .glass-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%);
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .glass-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .glass-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        .glass-button.danger {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+        .glass-button.danger:hover:not(:disabled) {
+            background: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Ecran de connexion */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #090d16 100%);
+            transition: opacity 0.5s ease;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+            text-align: center;
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #A855F7 0%, #6366F1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .input-field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .toggle-pw-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .toggle-pw-btn:hover {
+            color: var(--text-light);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            min-height: 20px;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.visible {
+            opacity: 1;
+        }
+
+        /* En-tête */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid var(--border-glow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-light);
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Layout principal */
+        main {
+            flex: 1;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Tableau des scores & Minuteur */
+        .scoreboard {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .team-card {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .team-card.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(22, 31, 49, 0.8) 100%);
+        }
+
+        .team-card.active::before {
+            content: 'TOUR ACTIF';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 12px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            letter-spacing: 1px;
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .team-card.active .team-name {
+            color: var(--text-light);
+        }
+
+        .team-score {
+            font-size: 3rem;
+            font-weight: 900;
+            font-family: monospace;
+            background: linear-gradient(180deg, #FFFFFF 0%, #CBD5E1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            position: relative;
+        }
+
+        .score-popup {
+            position: absolute;
+            top: -20px;
+            right: 20%;
+            font-size: 1.5rem;
+            font-weight: 900;
+            pointer-events: none;
+            animation: floatUp 1.2s forwards cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .score-popup.plus {
+            color: var(--gold-glow);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+        }
+
+        .score-popup.minus {
+            color: var(--error);
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+        }
+
+        /* Minuteur */
+        .timer-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .timer-svg {
+            width: 100px;
+            height: 100px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-bg-circle {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+            fill: transparent;
+        }
+
+        .timer-progress-circle {
+            stroke: var(--gold);
+            stroke-width: 8;
+            stroke-linecap: round;
+            fill: transparent;
+            stroke-dasharray: 264;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.1s linear, stroke 0.3s ease;
+        }
+
+        .timer-progress-circle.warning {
+            stroke: var(--error);
+        }
+
+        .timer-text-display {
+            position: absolute;
+            font-size: 1.8rem;
+            font-weight: 900;
+            font-family: monospace;
+            color: var(--text-light);
+        }
+
+        .timer-text-display.warning {
+            color: var(--error);
+            animation: pulseGlow 0.5s infinite alternate;
+        }
+
+        /* Bannière d'état */
+        .status-banner {
+            padding: 14px 24px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-banner.normal {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: var(--primary-glow);
+        }
+
+        .status-banner.escalated {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid var(--gold);
+            color: var(--gold-glow);
+            animation: pulseGlow 1.2s infinite alternate;
+        }
+
+        .multiplier-badge {
+            background: var(--gold);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 900;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Barre de progression */
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border-glow);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            transition: width 0.4s ease;
+        }
+
+        /* Carte de la Question */
+        .question-card {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 420px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .difficulty-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge-easy { background: rgba(16, 185, 129, 0.2); color: var(--easy-color); border: 1px solid var(--easy-color); }
+        .badge-normal { background: rgba(59, 130, 246, 0.2); color: var(--normal-color); border: 1px solid var(--normal-color); }
+        .badge-hard { background: rgba(236, 72, 153, 0.2); color: var(--hard-color); border: 1px solid var(--hard-color); }
+
+        .point-value {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--gold-glow);
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text-light);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .choice-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glow);
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: var(--primary-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .choice-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .choice-prefix {
+            background: rgba(255, 255, 255, 0.1);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .choice-btn.selected-correct {
+            background: rgba(16, 185, 129, 0.25) !important;
+            border-color: var(--success) !important;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
+            animation: correctPulse 0.6s ease;
+        }
+        .choice-btn.selected-correct .choice-prefix {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .choice-btn.selected-wrong {
+            background: rgba(239, 68, 68, 0.25) !important;
+            border-color: var(--error) !important;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4) !important;
+            animation: shake 0.4s ease;
+        }
+        .choice-btn.selected-wrong .choice-prefix {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .choice-btn.reveal-correct {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: var(--success) !important;
+        }
+
+        .controls-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 12px;
+        }
+
+        /* Ecran Gagnant */
+        #winner-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #080b12 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #winner-screen.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 501;
+        }
+
+        .winner-card {
+            position: relative;
+            z-index: 502;
+            max-width: 650px;
+            width: 100%;
+            padding: 48px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .trophy-icon {
+            font-size: 4rem;
+            margin-bottom: -10px;
+            animation: bounce 2s infinite;
+        }
+
+        .winner-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #FCE7F3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .final-scores-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 16px 0;
+        }
+
+        .final-score-box {
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glow);
+        }
+
+        .final-score-box.winner {
+            border-color: var(--gold);
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        /* Modal de Configuration */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 800;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            padding: 28px;
+            gap: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 12px;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.92); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
+            100% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.6); }
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-40px); }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; }
+            main { padding: 12px; gap: 16px; }
+            .scoreboard { grid-template-columns: 1fr; gap: 12px; }
+            .question-card { padding: 20px; min-height: auto; }
+            .question-text { font-size: 1.15rem; }
+            .team-score { font-size: 2.2rem; }
+            .choices-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Ecran de Connexion -->
+    <div id="login-screen">
+        <div class="glass-panel login-card">
+            <div class="brand-badge" style="display:inline-block; margin-bottom:12px;">BFA COMPETITION SYSTEM</div>
+            <h1 class="login-title">Portail du Quiz</h1>
+            <p class="login-subtitle">Saisissez les identifiants pour déverrouiller la console</p>
+            
+            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();">
+                <div class="input-group">
+                    <label for="username">Identifiant</label>
+                    <input type="text" id="username" class="input-field" autocomplete="off" required />
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-field-wrapper">
+                        <input type="password" id="password" class="input-field" required />
+                        <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" aria-label="Afficher mot de passe">
+                            <svg id="eye-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="login-error" class="error-message">Identifiants invalides. Accès refusé.</div>
+
+                <button type="submit" class="glass-button" style="width:100%; margin-top:12px; padding:14px;">
+                    Déverrouiller
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- En-tête -->
+    <header>
+        <div class="brand-logo">
+            <span class="brand-badge">BFA</span>
+            <span>CHAMPIONNAT QUIZ</span>
+        </div>
+        <div class="header-actions">
+            <button class="glass-button" id="sound-btn" onclick="toggleMute()" title="Activer/Désactiver le son">
+                <span id="sound-icon">🔊</span>
+            </button>
+            <button class="glass-button" onclick="openAdminModal()">
+                <span>⚙️ Options</span>
+            </button>
+            <button class="glass-button danger" onclick="confirmResetGame()">
+                <span>🔄 Recommencer</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Scores & Minuteur -->
+        <section class="scoreboard">
+            <div id="team-1-card" class="glass-panel team-card">
+                <div id="team-1-name" class="team-name">Groupe 1</div>
+                <div id="team-1-score" class="team-score">00</div>
+            </div>
+
+            <div class="timer-wrapper">
+                <svg class="timer-svg" viewBox="0 0 100 100">
+                    <circle class="timer-bg-circle" cx="50" cy="50" r="42"></circle>
+                    <circle id="timer-ring" class="timer-progress-circle" cx="50" cy="50" r="42"></circle>
+                </svg>
+                <div id="timer-display" class="timer-text-display">10</div>
+            </div>
+
+            <div id="team-2-card" class="glass-panel team-card">
+                <div id="team-2-name" class="team-name">Groupe 2</div>
+                <div id="team-2-score" class="team-score">00</div>
+            </div>
+        </section>
+
+        <!-- Statut du tour & Multiplicateur -->
+        <div id="status-banner" class="glass-panel status-banner normal">
+            <span id="status-text">GROUPE 1 — À VOUS DE JOUER</span>
+            <span id="multiplier-badge" class="multiplier-badge">1x POINTS</span>
+        </div>
+
+        <!-- Progression -->
+        <section class="progress-section">
+            <div class="progress-info">
+                <span id="progress-text">Question 1 sur 30</span>
+                <span id="questions-left-text">29 Restantes</span>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+        </section>
+
+        <!-- Panneau de la Question -->
+        <section class="glass-panel question-card">
+            <div class="question-header">
+                <span id="difficulty-badge" class="difficulty-badge badge-easy">FACILE</span>
+                <span id="point-value" class="point-value">2 PTS DE BASE (2 PTS TOTAL)</span>
+            </div>
+
+            <div id="question-text" class="question-text">
+                Chargement de la question...
+            </div>
+
+            <div id="choices-grid" class="choices-grid">
+                <!-- Choix générés dynamiquement -->
+            </div>
+
+            <div class="controls-footer">
+                <div id="attempt-info" style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">
+                    Essai 1 • Points Standard
+                </div>
+                <button id="next-btn" class="glass-button" onclick="nextQuestion()" disabled>
+                    Question Suivante ➔
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Ecran Gagnant -->
+    <div id="winner-screen">
+        <div class="glass-panel winner-card">
+            <div class="trophy-icon">🏆</div>
+            <h2 id="winner-title" class="winner-title">GROUPE 1 GAGNE !</h2>
+            <p style="color: var(--text-muted); font-weight:600;">Fin de la compétition</p>
+
+            <div class="final-scores-grid">
+                <div id="final-box-1" class="final-score-box">
+                    <div id="final-name-1" style="color:var(--text-muted); font-weight:700;">Groupe 1</div>
+                    <div id="final-score-1" style="font-size:2.5rem; font-weight:900; margin-top:6px;">0</div>
+                </div>
+                <div id="final-box-2" class="final-score-box">
+                    <div id="final-name-2" style="color:var(--text-muted); font-weight:700;">Groupe 2</div>
+                    <div id="final-score-2" style="font-size:2.5rem; font-weight:900; margin-top:6px;">0</div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:16px;">
+                <button class="glass-button" onclick="restartGame()">Rejouer</button>
+                <button class="glass-button danger" onclick="openAdminModal()">Options</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'Options -->
+    <div id="admin-modal" class="modal-backdrop">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h3 style="font-weight:800; text-transform:uppercase; letter-spacing:1px;">Configuration du Système</h3>
+                <button class="glass-button danger" onclick="closeAdminModal()" style="padding:6px 12px;">✕</button>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div style="background:rgba(15,23,42,0.5); padding:16px; border-radius:12px; border:1px solid var(--border-glow);">
+                    <h4 style="margin-bottom:12px; color:var(--primary-glow);">Noms des Équipes</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Groupe 1</label>
+                            <input type="text" id="input-group1-name" class="input-field" />
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Groupe 2</label>
+                            <input type="text" id="input-group2-name" class="input-field" />
+                        </div>
+                    </div>
+                    <button class="glass-button" onclick="saveGroupNames()" style="margin-top:14px; width:100%;">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. CONFIGURATION ET NOUVELLES LISTES DE QUESTIONS
+           ========================================================================== */
+        const CONFIG = {
+            username: "BFA",
+            password: "BFA",
+            storagePrefix: "bfa_quiz_",
+            turnDurationSeconds: 10,
+            
+            // Les deux listes de questions fusionnées dans le tableau central du jeu
+            questions: [
+                /* LISTE 1 */
+                {
+                    question: "En quelle année Benito Mussolini a-t-il fondé les Faisceaux italiens de combat ?",
+                    choices: ["1918", "1919", "1921", "1922"],
+                    correctAnswer: "1919",
+                    level: "Easy"
+                },
+                {
+                    question: "Quel groupe paramilitaire fasciste a utilisé la violence contre ses adversaires politiques ?",
+                    choices: ["Les Chemises rouges", "Les Chemises bleues", "Les Chemises noires", "Les Chemises brunes"],
+                    correctAnswer: "Les Chemises noires",
+                    level: "Easy"
+                },
+                {
+                    question: "En quelle année les Faisceaux italiens de combat sont-ils devenus le Parti national fasciste ?",
+                    choices: ["1919", "1920", "1921", "1923"],
+                    correctAnswer: "1921",
+                    level: "Easy"
+                },
+                {
+                    question: "Quel événement d'octobre 1922 a marqué l'arrivée du fascisme au pouvoir ?",
+                    choices: ["La Marche sur Rome", "L'assassinat de Matteotti", "La loi Acerbo", "La conquête de l'Éthiopie"],
+                    correctAnswer: "La Marche sur Rome",
+                    level: "Easy"
+                },
+                {
+                    question: "Qui a nommé Benito Mussolini président du Conseil en octobre 1922 ?",
+                    choices: ["Giacomo Matteotti", "Le roi Victor-Emmanuel III", "Le Parlement italien", "Les Chemises noires"],
+                    correctAnswer: "Le roi Victor-Emmanuel III",
+                    level: "Normal"
+                },
+                {
+                    question: "Quelle loi de 1923 a permis à Mussolini de renforcer son contrôle politique ?",
+                    choices: ["La loi Acerbo", "La loi martiale", "La loi d'exception", "Les lois raciales"],
+                    correctAnswer: "La loi Acerbo",
+                    level: "Normal"
+                },
+                {
+                    question: "L'assassinat de quel député socialiste en 1924 a provoqué une crise majeure accélérant la mise en place de la dictature ?",
+                    choices: ["Victor-Emmanuel III", "Giacomo Matteotti", "Benito Mussolini", "Antonio Gramsci"],
+                    correctAnswer: "Giacomo Matteotti",
+                    level: "Normal"
+                },
+                {
+                    question: "À partir de quel moment le régime fasciste devient-il un système à parti unique avec une suppression forte des libertés politiques ?",
+                    choices: ["1919", "1922", "1925", "1938"],
+                    correctAnswer: "1925",
+                    level: "Normal"
+                },
+                {
+                    question: "Parmi ces principes, lequel ne fait PAS partie des piliers majeurs de l'idéologie fasciste ?",
+                    choices: ["Le nationalisme", "Le pluralisme politique", "L'autoritarisme", "Le culte du chef"],
+                    correctAnswer: "Le pluralisme politique",
+                    level: "Easy"
+                },
+                {
+                    question: "Quelle campagne militaire expansionniste le régime fasciste mène-t-il en 1935-1936 ?",
+                    choices: ["La conquête de la Libye", "La conquête de l'Éthiopie", "L'invasion de la Grèce", "La conquête de la Sicile"],
+                    correctAnswer: "La conquête de l'Éthiopie",
+                    level: "Normal"
+                },
+                {
+                    question: "Que prévoyaient notamment les lois antisémites adoptées par le régime fasciste à partir de 1938 ?",
+                    choices: [
+                        "L'expulsion immédiate du territoire",
+                        "L'interdiction des mariages entre Juifs et non-Juifs",
+                        "La confiscation totale des biens immobiliers",
+                        "L'obligation de servir dans les Chemises noires"
+                    ],
+                    correctAnswer: "L'interdiction des mariages entre Juifs et non-Juifs",
+                    level: "Hard"
+                },
+                {
+                    question: "En quelle année l'Italie fasciste est-elle entrée dans la Seconde Guerre mondiale aux côtés de l'Allemagne nazie ?",
+                    choices: ["1938", "1939", "1940", "1941"],
+                    correctAnswer: "1940",
+                    level: "Normal"
+                },
+                {
+                    question: "Quel événement survenu en juillet 1943 a directement provoqué la chute et l'arrestation de Mussolini ?",
+                    choices: [
+                        "La signature de la loi Acerbo",
+                        "La défaite de l'Éthiopie",
+                        "Le débarquement allié en Sicile",
+                        "La fin de la Seconde Guerre mondiale"
+                    ],
+                    correctAnswer: "Le débarquement allié en Sicile",
+                    level: "Normal"
+                },
+                {
+                    question: "À quelle date précise Benito Mussolini a-t-il été destitué et arrêté ?",
+                    choices: ["28 octobre 1922", "10 juin 1940", "25 juillet 1943", "8 mai 1945"],
+                    correctAnswer: "25 juillet 1943",
+                    level: "Hard"
+                },
+                {
+                    question: "Comment s'appelait le régime fasciste maintenu dans le nord de l'Italie avec le soutien de l'Allemagne jusqu'en 1945 ?",
+                    choices: [
+                        "Le Parti national fasciste",
+                        "La République sociale italienne",
+                        "Les Faisceaux italiens de combat",
+                        "Le Royaume d'Italie"
+                    ],
+                    correctAnswer: "La République sociale italienne",
+                    level: "Hard"
+                },
+
+                /* LISTE 2 */
+                {
+                    question: "Dans quel contexte historique global le fascisme est-il apparu en Italie ?",
+                    choices: [
+                        "Après la Seconde Guerre mondiale",
+                        "Pendant la Révolution française",
+                        "Dans l'après-Première Guerre mondiale",
+                        "Durant la crise économique de 1929",
+                        "Lors de l'unification italienne du XIXe siècle"
+                    ],
+                    correctAnswer: "Dans l'après-Première Guerre mondiale",
+                    level: "Easy"
+                },
+                {
+                    question: "Quel instrument le régime fasciste a-t-il utilisé pour encadrer la population et diffuser son idéologie ?",
+                    choices: [
+                        "La presse libre",
+                        "La propagande",
+                        "Les syndicats indépendants",
+                        "Les référendums populaires",
+                        "Les débats parlementaires"
+                    ],
+                    correctAnswer: "La propagande",
+                    level: "Easy"
+                },
+                {
+                    question: "Quelle valeur ou attitude collective est ouvertement glorifiée par le régime fasciste d'après le texte ?",
+                    choices: [
+                        "L'individualisme",
+                        "La discipline",
+                        "La neutralité politique",
+                        "Le pacifisme",
+                        "L'altermondialisme"
+                    ],
+                    correctAnswer: "La discipline",
+                    level: "Easy"
+                },
+                {
+                    question: "Parmi ces conséquences internationales, laquelle est directement liée à la politique de Mussolini selon le texte ?",
+                    choices: [
+                        "L'adhésion à la Société des Nations",
+                        "Le rapprochement avec l'Allemagne nazie",
+                        "L'alliance indéfectible avec la France",
+                        "La neutralité absolue pendant la Seconde Guerre mondiale",
+                        "La signature d'un traité de paix avec le Royaume-Uni"
+                    ],
+                    correctAnswer: "Le rapprochement avec l'Allemagne nazie",
+                    level: "Easy"
+                },
+                {
+                    question: "Combien de temps le régime fasciste a-t-il profondément transformé l'Italie ?",
+                    choices: [
+                        "Moins de 5 ans",
+                        "Environ 10 ans",
+                        "Plus de vingt ans",
+                        "Près de cinquante ans",
+                        "Un siècle entier"
+                    ],
+                    correctAnswer: "Plus de vingt ans",
+                    level: "Easy"
+                },
+                {
+                    question: "Quels facteurs sociaux et politiques ont favorisé l'émergence des Faisceaux italiens de combat en 1919 ?",
+                    choices: [
+                        "Des tensions sociales et un sentiment de frustration lié aux résultats de la guerre",
+                        "Une prospérité économique inédite et une stabilité parlementaire",
+                        "Une alliance solide avec l'Empire austro-hongrois",
+                        "La victoire totale de la démocratie libérale en Europe",
+                        "L'absence complète de mouvements paramilitaires",
+                        "Une révolution industrielle pacifique et sans contestation"
+                    ],
+                    correctAnswer: "Des tensions sociales et un sentiment de frustration lié aux résultats de la guerre",
+                    level: "Normal"
+                },
+                {
+                    question: "Quelle a été la réaction initiale du roi Victor-Emmanuel III face à la Marche sur Rome en octobre 1922 ?",
+                    choices: [
+                        "Il a proclamé l'état de siège immédiatement",
+                        "Il a fui la capitale avec son gouvernement",
+                        "Il a refusé de proclamer l'état de siège et a nommé Mussolini",
+                        "Il a fait arrêter Benito Mussolini sur le champ",
+                        "Il a dissous le Parti national fasciste",
+                        "Il a appelé l'armée française à l'aide"
+                    ],
+                    correctAnswer: "Il a refusé de proclamer l'état de siège et a nommé Mussolini",
+                    level: "Normal"
+                },
+                {
+                    question: "Parmi les propositions suivantes, quelle mesure caractérise la politique antisémite adoptée par l'Italie à partir de 1938 ?",
+                    choices: [
+                        "L'obligation de porter un uniforme militaire",
+                        "L'exclusion des Juifs de certains emplois",
+                        "L'exil forcé de tous les non-fascistes vers l'Éthiopie",
+                        "La fermeture obligatoire de toutes les églises catholiques",
+                        "L'interdiction de parler la langue italienne",
+                        "L'obligation de rejoindre les Chemises noires"
+                    ],
+                    correctAnswer: "L'exclusion des Juifs de certains emplois",
+                    level: "Normal"
+                },
+                {
+                    question: "Quelle a été l'attitude de l'idéologie fasciste à l'égard de la démocratie libérale ?",
+                    choices: [
+                        "Elle l'a adoptée en la reformulant",
+                        "Elle l'a défendue contre le communisme",
+                        "Elle l'a totalement rejetée",
+                        "Elle l'a combinée avec le monarchisme absolu",
+                        "Elle y est restée indifférente",
+                        "Elle l'a imposée dans toutes ses colonies"
+                    ],
+                    correctAnswer: "Elle l'a totalement rejetée",
+                    level: "Normal"
+                },
+                {
+                    question: "Qu'est-il advenu de la structure politique de l'Italie après la transformation progressive du régime en dictature à partir de 1925 ?",
+                    choices: [
+                        "Le régime est devenu une monarchie constitutionnelle parlementaire",
+                        "Le régime est devenu un système à parti unique",
+                        "Un gouvernement de coalition de gauche s'est formé",
+                        "Le pouvoir a été confié exclusivement au Parlement",
+                        "Les élections régionales sont devenues entièrement directes et libres",
+                        "Le pouvoir exécutif a été aboli au profit d'un conseil citoyen"
+                    ],
+                    correctAnswer: "Le régime est devenu un système à parti unique",
+                    level: "Normal"
+                },
+                {
+                    question: "Selon la vision idéologique fasciste présentée dans la section S1 et S3, comment la relation entre l'État, la nation et l'individu est-elle conçue ?",
+                    choices: [
+                        "Les droits de l'individu priment sur les intérêts de l'État et de la nation",
+                        "L'État, la nation et l'individu possèdent une souveraineté strictly égale",
+                        "L'État et la nation doivent être placés au-dessus des intérêts individuels",
+                        "L'État doit disparaître au profit d'une liberté individuelle absolue",
+                        "L'individu doit utiliser l'État uniquement pour son enrichissement personnel",
+                        "La nation doit être divisée en communautés autonomes sans État central",
+                        "L'État ne doit intervenir que dans le domaine religieux",
+                        "Les intérêts régionaux doivent l'emporter sur la nation"
+                    ],
+                    correctAnswer: "L'État et la nation doivent être placés au-dessus des intérêts individuels",
+                    level: "Hard"
+                },
+                {
+                    question: "Quel enchaînement précis d'événements a conduit le fascisme à transformer progressivement le régime libéral italien en dictature entre 1922 et 1925 ?",
+                    choices: [
+                        "Marche sur Rome (1922) -> Loi Acerbo (1923) -> Crise de l'assassinat de Matteotti (1924) -> Suppression des libertés (1925)",
+                        "Loi Acerbo (1922) -> Conquête de l'Éthiopie (1923) -> Marche sur Rome (1924) -> Lois raciales (1925)",
+                        "Assassinat de Matteotti (1922) -> Débarquement en Sicile (1923) -> Loi Acerbo (1924) -> Parti unique (1925)",
+                        "Fondation des Faisceaux (1922) -> Entrée en guerre (1923) -> Révolution de juillet (1924) -> Dictature (1925)",
+                        "Création des Chemises noires (1922) -> Lois antisémites (1923) -> Loi Acerbo (1924) -> République de Salò (1925)",
+                        "Marche sur Rome (1922) -> Traité avec l'Allemagne (1923) -> Répression des syndicats (1924) -> Démission du Roi (1925)",
+                        "Arrestation de Mussolini (1922) -> Ambiance d'après-guerre (1923) -> Loi Acerbo (1924) -> Dictature (1925)",
+                        "Proclamation de l'état de siège (1922) -> Mort du Roi (1923) -> Assassinat de Matteotti (1924) -> Parti unique (1925)"
+                    ],
+                    correctAnswer: "Marche sur Rome (1922) -> Loi Acerbo (1923) -> Crise de l'assassinat de Matteotti (1924) -> Suppression des libertés (1925)",
+                    level: "Hard"
+                },
+                {
+                    question: "Quelles ont été les composantes majeures de la politique extérieure et internationale de l'Italie fasciste décrites dans le texte ?",
+                    choices: [
+                        "Politique pacifique, décolonisation rapide et neutralité diplomatique",
+                        "Politique expansionniste (Éthiopie), rapprochement avec l'Allemagne et entrée dans la guerre en 1940",
+                        "Alliance exclusive avec le Royaume-Uni, rejet du militarisme et refus d'expansion",
+                        "Invasion de la France dès 1935, rupture avec l'Allemagne et signature du pacte de la SDN",
+                        "Défense des démocraties européennes, lutte contre les totalitarismes et repli isolationniste",
+                        "Conquête de l'Espagne, guerre contre l'Allemagne nazie et désarmement de la flotte",
+                        "Neutralité stricte jusqu'en 1945 et vente des colonies africaines",
+                        "Soutien aux mouvements révolutionnaires asiatiques et alliance avec l'URSS"
+                    ],
+                    correctAnswer: "Politique expansionniste (Éthiopie), rapprochement avec l'Allemagne et entrée dans la guerre en 1940",
+                    level: "Hard"
+                },
+                {
+                    question: "Quelle a été la situation politique de la partie Nord de l'Italie après la chute et la destitution de Benito Mussolini le 25 juillet 1943 ?",
+                    choices: [
+                        "Elle est devenue une démocratie libérale sous le contrôle du roi Victor-Emmanuel III",
+                        "Le fascisme s'y est maintenu via la République sociale italienne, soutenue par l'Allemagne",
+                        "Elle a été immédiatement annexée et intégrée directement au territoire métropolitain français",
+                        "Elle s'est déclarée territoire neutre et indépendant jusqu'à la signature de la paix en 1945",
+                        "Les Chemises noires y ont restauré la monarchie parlementaire sans aide extérieure",
+                        "Elle a été occupée exclusivement par les troupes britanniques et américaines sans résistance",
+                        "Elle est tombée sous le contrôle direct d'un gouvernement socialiste dirigé par les héritiers de Matteotti",
+                        "Elle est devenue une colonie gérée directement par les autorités éthiopiennes",
+                        "Elle a été dissoute en plusieurs micro-États indépendants",
+                        "Elle a immédiatement rejoint les alliés pour déclarer la guerre à la République sociale"
+                    ],
+                    correctAnswer: "Le fascisme s'y est maintenu via la République sociale italienne, soutenue par l'Allemagne",
+                    level: "Hard"
+                },
+                {
+                    question: "Lequel des ensembles de termes suivants résume le plus précisément les piliers fondamentaux du fascisme italien exposés dans la section 'S3 — L’idéologie' ?",
+                    choices: [
+                        "Nationalisme, autoritarisme, militarisme et culte du chef",
+                        "Socialisme, pacifisme, fédéralisme et pluralisme",
+                        "Démocratie libérale, individualisme, laïcité et désarmement",
+                        "Monarchisme absolu, anarchisme, mercantilisme et décentralisation",
+                        "Internationalisme, égalitarisme, parlementarisme et tolérance",
+                        "Capitalisme pur, libéralisme, humanisme et souveraineté populaire",
+                        "Isolationnisme, démilitarisation, laïcité et multipartisme",
+                        "Marxisme-léninisme, collectivisme agricole, pacifisme et laïcité",
+                        "Feudalisme, monarchie de droit divin, théocratie et corporatisme",
+                        "Souverainisme, écologie politique, désobéissance civile et égalité"
+                    ],
+                    correctAnswer: "Nationalisme, autoritarisme, militarisme et culte du chef",
+                    level: "Hard"
+                }
+            ]
+        };
+
+        const OPTION_PREFIXES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+        /* ==========================================================================
+           2. ETAT GLOBAL
+           ========================================================================== */
+        let state = {
+            group1Name: "Groupe 1",
+            group2Name: "Groupe 2",
+            group1Score: 0,
+            group2Score: 0,
+            currentQuestionIndex: 0,
+            activeGroup: 1,
+            currentMultiplier: 1,
+            failedIndicesForCurrentQuestion: new Set(),
+            questionResolved: false,
+            soundMuted: false,
+            timerInterval: null,
+            timeRemaining: 10
+        };
+
+        /* ==========================================================================
+           3. SYNTHETISEUR AUDIO
+           ========================================================================== */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playSound(type) {
+            if (state.soundMuted) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(450, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'tick') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(800, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'timeout') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.linearRampToValueAtTime(90, now + 0.4);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'correct') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+                    osc.start(now);
+                    osc.stop(now + 0.55);
+                } else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(160, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'escalate') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(640, now + 0.3);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'winner') {
+                    [261.63, 329.63, 392.00, 523.25, 659.25].forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.type = 'triangle';
+                        o.frequency.setValueAtTime(freq, now + (idx * 0.12));
+                        g.gain.setValueAtTime(0.2, now + (idx * 0.12));
+                        g.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.12) + 0.4);
+                        o.start(now + (idx * 0.12));
+                        o.stop(now + (idx * 0.12) + 0.4);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio non disponible.");
+            }
+        }
+
+        function toggleMute() {
+            state.soundMuted = !state.soundMuted;
+            document.getElementById('sound-icon').textContent = state.soundMuted ? '🔇' : '🔊';
+        }
+
+        /* ==========================================================================
+           4. AUTHENTIFICATION
+           ========================================================================== */
+        function togglePasswordVisibility() {
+            const pwInput = document.getElementById('password');
+            pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleLogin() {
+            const userVal = document.getElementById('username').value.trim();
+            const passVal = document.getElementById('password').value;
+            const errorEl = document.getElementById('login-error');
+
+            if (userVal === CONFIG.username && passVal === CONFIG.password) {
+                playSound('correct');
+                document.getElementById('login-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-screen').style.display = 'none';
+                    startTurnTimer();
+                }, 500);
+            } else {
+                playSound('wrong');
+                errorEl.classList.add('visible');
+                setTimeout(() => {
+                    errorEl.classList.remove('visible');
+                }, 2500);
+            }
+        }
+
+        /* ==========================================================================
+           5. STOCKAGE LOCAL
+           ========================================================================== */
+        function loadStoredData() {
+            const g1 = localStorage.getItem(CONFIG.storagePrefix + "g1Name");
+            if (g1) state.group1Name = g1;
+
+            const g2 = localStorage.getItem(CONFIG.storagePrefix + "g2Name");
+            if (g2) state.group2Name = g2;
+        }
+
+        function saveData() {
+            localStorage.setItem(CONFIG.storagePrefix + "g1Name", state.group1Name);
+            localStorage.setItem(CONFIG.storagePrefix + "g2Name", state.group2Name);
+        }
+
+        /* ==========================================================================
+           6. GESTION DU MINUTEUR ET DES TOURS
+           ========================================================================== */
+        function stopTurnTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function startTurnTimer() {
+            stopTurnTimer();
+            state.timeRemaining = CONFIG.turnDurationSeconds;
+            updateTimerDisplay();
+
+            state.timerInterval = setInterval(() => {
+                state.timeRemaining--;
+                updateTimerDisplay();
+
+                if (state.timeRemaining <= 3 && state.timeRemaining > 0) {
+                    playSound('tick');
+                }
+
+                if (state.timeRemaining <= 0) {
+                    stopTurnTimer();
+                    handleTurnTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display');
+            const ring = document.getElementById('timer-ring');
+            
+            display.textContent = state.timeRemaining;
+
+            const circumference = 264;
+            const progress = state.timeRemaining / CONFIG.turnDurationSeconds;
+            const dashoffset = circumference * (1 - progress);
+            ring.style.strokeDashoffset = dashoffset;
+
+            if (state.timeRemaining <= 3) {
+                display.classList.add('warning');
+                ring.classList.add('warning');
+            } else {
+                display.classList.remove('warning');
+                ring.classList.remove('warning');
+            }
+        }
+
+        function handleTurnTimeout() {
+            if (state.questionResolved) return;
+            
+            playSound('timeout');
+
+            const activeName = state.activeGroup === 1 ? state.group1Name : state.group2Name;
+            document.getElementById('attempt-info').textContent = `Temps écoulé pour ${activeName} ! Passage de main...`;
+
+            const choices = document.querySelectorAll('.choice-btn');
+            choices.forEach(btn => btn.disabled = true);
+
+            setTimeout(() => {
+                escalateTurn();
+            }, 1200);
+        }
+
+        function escalateTurn() {
+            state.currentMultiplier++;
+            state.activeGroup = state.activeGroup === 1 ? 2 : 1;
+            
+            playSound('escalate');
+            
+            updateScoreboard();
+            updateStatusBanner();
+            
+            const choices = document.querySelectorAll('.choice-btn');
+            choices.forEach((btn, idx) => {
+                if (!state.failedIndicesForCurrentQuestion.has(idx)) {
+                    btn.disabled = false;
+                }
+            });
+
+            const activeName = state.activeGroup === 1 ? state.group1Name : state.group2Name;
+            const multText = getMultiplierWord(state.currentMultiplier);
+            document.getElementById('attempt-info').textContent = `Tour de ${activeName} • ${multText} (${state.currentMultiplier}x Points)`;
+
+            startTurnTimer();
+        }
+
+        function getMultiplierWord(mult) {
+            switch(mult) {
+                case 1: return "Points Standard";
+                case 2: return "POINTS DOUBLÉS";
+                case 3: return "POINTS TRIPLES";
+                case 4: return "POINTS QUADRUPLES";
+                case 5: return "POINTS QUINTUPLES";
+                default: return `MULTIPLICATEUR ${mult}x`;
+            }
+        }
+
+        /* ==========================================================================
+           7. AFFICHAGE DU JEU ET REPONSES
+           ========================================================================== */
+        function getQuestionBasePoints(level) {
+            switch(level) {
+                case 'Easy': return 2;
+                case 'Normal': return 5;
+                case 'Hard': return 10;
+                default: return 2;
+            }
+        }
+
+        function getDifficultyLabel(level) {
+            switch(level) {
+                case 'Easy': return 'FACILE';
+                case 'Normal': return 'MOYEN';
+                case 'Hard': return 'DIFFICILE';
+                default: return 'FACILE';
+            }
+        }
+
+        function updateScoreboard() {
+            document.getElementById('team-1-name').textContent = state.group1Name;
+            document.getElementById('team-2-name').textContent = state.group2Name;
+            
+            document.getElementById('team-1-score').textContent = formatScoreDisplay(state.group1Score);
+            document.getElementById('team-2-score').textContent = formatScoreDisplay(state.group2Score);
+
+            const t1Card = document.getElementById('team-1-card');
+            const t2Card = document.getElementById('team-2-card');
+
+            if (state.activeGroup === 1) {
+                t1Card.classList.add('active');
+                t2Card.classList.remove('active');
+            } else {
+                t2Card.classList.add('active');
+                t1Card.classList.remove('active');
+            }
+        }
+
+        function formatScoreDisplay(score) {
+            if (isNaN(score)) return "00";
+            if (score < 0) {
+                return "-" + String(Math.abs(score)).padStart(2, '0');
+            }
+            return String(score).padStart(2, '0');
+        }
+
+        function triggerScorePopup(group, points) {
+            const targetCard = group === 1 ? document.getElementById('team-1-card') : document.getElementById('team-2-card');
+            const popup = document.createElement('div');
+            
+            if (points >= 0) {
+                popup.className = 'score-popup plus';
+                popup.textContent = `+${points}`;
+            } else {
+                popup.className = 'score-popup minus';
+                popup.textContent = `${points}`;
+            }
+
+            targetCard.appendChild(popup);
+            setTimeout(() => popup.remove(), 1200);
+        }
+
+        function updateStatusBanner() {
+            const banner = document.getElementById('status-banner');
+            const statusText = document.getElementById('status-text');
+            const multBadge = document.getElementById('multiplier-badge');
+            
+            const activeName = state.activeGroup === 1 ? state.group1Name : state.group2Name;
+            const multWord = getMultiplierWord(state.currentMultiplier);
+
+            if (state.currentMultiplier > 1) {
+                banner.className = "glass-panel status-banner escalated";
+                statusText.textContent = `⚡ ${activeName} — ${multWord}`;
+            } else {
+                banner.className = "glass-panel status-banner normal";
+                statusText.textContent = `${activeName} — À VOUS DE JOUER`;
+            }
+
+            multBadge.textContent = `${state.currentMultiplier}x POINTS`;
+
+            const q = CONFIG.questions[state.currentQuestionIndex];
+            if (q) {
+                const base = getQuestionBasePoints(q.level);
+                const total = base * state.currentMultiplier;
+                document.getElementById('point-value').textContent = `${base} PTS DE BASE (${total} PTS TOTAL)`;
+            }
+        }
+
+        function loadQuestion() {
+            if (state.currentQuestionIndex >= CONFIG.questions.length) {
+                finishGame();
+                return;
+            }
+
+            stopTurnTimer();
+
+            const q = CONFIG.questions[state.currentQuestionIndex];
+
+            state.currentMultiplier = 1;
+            state.failedIndicesForCurrentQuestion.clear();
+            state.questionResolved = false;
+
+            document.getElementById('next-btn').disabled = true;
+
+            const badge = document.getElementById('difficulty-badge');
+            badge.textContent = getDifficultyLabel(q.level);
+            badge.className = `difficulty-badge badge-${q.level.toLowerCase()}`;
+
+            document.getElementById('question-text').textContent = q.question;
+
+            const totalQ = CONFIG.questions.length;
+            const currentNum = state.currentQuestionIndex + 1;
+            document.getElementById('progress-text').textContent = `Question ${currentNum} sur ${totalQ}`;
+            document.getElementById('questions-left-text').textContent = `${totalQ - currentNum} Restantes`;
+            document.getElementById('progress-bar-fill').style.width = `${(currentNum / totalQ) * 100}%`;
+            document.getElementById('attempt-info').textContent = "Essai 1 • Points Standard";
+
+            const choicesContainer = document.getElementById('choices-grid');
+            choicesContainer.innerHTML = '';
+
+            q.choices.forEach((choiceText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.onclick = () => selectAnswer(index);
+                btn.innerHTML = `
+                    <span class="choice-prefix">${OPTION_PREFIXES[index] || (index + 1)}</span>
+                    <span>${choiceText}</span>
+                `;
+                choicesContainer.appendChild(btn);
+            });
+
+            updateScoreboard();
+            updateStatusBanner();
+
+            if (document.getElementById('login-screen').style.display === 'none') {
+                startTurnTimer();
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (state.questionResolved) return;
+
+            stopTurnTimer();
+            playSound('click');
+
+            const q = CONFIG.questions[state.currentQuestionIndex];
+            const basePoints = getQuestionBasePoints(q.level);
+            const effectivePoints = basePoints * state.currentMultiplier;
+            const choices = document.querySelectorAll('.choice-btn');
+            
+            choices.forEach(btn => btn.disabled = true);
+
+            const selectedText = q.choices[selectedIndex];
+            const isCorrect = (selectedText === q.correctAnswer);
+
+            if (isCorrect) {
+                playSound('correct');
+                choices[selectedIndex].classList.add('selected-correct');
+
+                if (state.activeGroup === 1) {
+                    state.group1Score += effectivePoints;
+                } else {
+                    state.group2Score += effectivePoints;
+                }
+
+                triggerScorePopup(state.activeGroup, effectivePoints);
+                updateScoreboard();
+
+                state.questionResolved = true;
+                const winnerGroup = state.activeGroup === 1 ? state.group1Name : state.group2Name;
+                document.getElementById('attempt-info').textContent = `Bonne réponse ! ${winnerGroup} gagne ${effectivePoints} points !`;
+                document.getElementById('next-btn').disabled = false;
+
+            } else {
+                playSound('wrong');
+                choices[selectedIndex].classList.add('selected-wrong');
+                state.failedIndicesForCurrentQuestion.add(selectedIndex);
+
+                if (state.activeGroup === 1) {
+                    state.group1Score -= effectivePoints;
+                } else {
+                    state.group2Score -= effectivePoints;
+                }
+
+                triggerScorePopup(state.activeGroup, -effectivePoints);
+                updateScoreboard();
+
+                const activeName = state.activeGroup === 1 ? state.group1Name : state.group2Name;
+
+                if (state.failedIndicesForCurrentQuestion.size >= q.choices.length) {
+                    state.questionResolved = true;
+                    document.getElementById('attempt-info').textContent = `Toutes les options sont épuisées ! Fin de la question.`;
+                    
+                    q.choices.forEach((cText, idx) => {
+                        if (cText === q.correctAnswer) {
+                            choices[idx].classList.add('reveal-correct');
+                        }
+                    });
+                    document.getElementById('next-btn').disabled = false;
+                } else {
+                    document.getElementById('attempt-info').textContent = `Mauvaise réponse pour ${activeName} (-${effectivePoints} pts). Passage de main...`;
+                    
+                    setTimeout(() => {
+                        escalateTurn();
+                    }, 1200);
+                }
+            }
+        }
+
+        function nextQuestion() {
+            if (!state.questionResolved) return;
+            playSound('click');
+            
+            state.currentQuestionIndex++;
+            state.activeGroup = (state.currentQuestionIndex % 2 === 0) ? 1 : 2;
+            
+            loadQuestion();
+        }
+
+        function finishGame() {
+            stopTurnTimer();
+            playSound('winner');
+            
+            const winnerScreen = document.getElementById('winner-screen');
+            const winnerTitle = document.getElementById('winner-title');
+
+            document.getElementById('final-name-1').textContent = state.group1Name;
+            document.getElementById('final-name-2').textContent = state.group2Name;
+            document.getElementById('final-score-1').textContent = formatScoreDisplay(state.group1Score);
+            document.getElementById('final-score-2').textContent = formatScoreDisplay(state.group2Score);
+
+            const box1 = document.getElementById('final-box-1');
+            const box2 = document.getElementById('final-box-2');
+            box1.classList.remove('winner');
+            box2.classList.remove('winner');
+
+            if (state.group1Score > state.group2Score) {
+                winnerTitle.textContent = `${state.group1Name.toUpperCase()} GAGNE !`;
+                box1.classList.add('winner');
+            } else if (state.group2Score > state.group1Score) {
+                winnerTitle.textContent = `${state.group2Name.toUpperCase()} GAGNE !`;
+                box2.classList.add('winner');
+            } else {
+                winnerTitle.textContent = "ÉGALITÉ PARFAITE !";
+            }
+
+            winnerScreen.classList.add('visible');
+            startConfetti();
+        }
+
+        function restartGame() {
+            playSound('click');
+            stopConfetti();
+            document.getElementById('winner-screen').classList.remove('visible');
+            state.group1Score = 0;
+            state.group2Score = 0;
+            state.currentQuestionIndex = 0;
+            state.activeGroup = 1;
+            loadQuestion();
+        }
+
+        function confirmResetGame() {
+            if (confirm("Voulez-vous vraiment réinitialiser le jeu depuis la première question ?")) {
+                restartGame();
+            }
+        }
+
+        /* ==========================================================================
+           8. OPTIONS
+           ========================================================================== */
+        function openAdminModal() {
+            playSound('click');
+            stopTurnTimer();
+            document.getElementById('input-group1-name').value = state.group1Name;
+            document.getElementById('input-group2-name').value = state.group2Name;
+            document.getElementById('admin-modal').classList.add('open');
+        }
+
+        function closeAdminModal() {
+            playSound('click');
+            document.getElementById('admin-modal').classList.remove('open');
+            if (!state.questionResolved && document.getElementById('login-screen').style.display === 'none') {
+                startTurnTimer();
+            }
+        }
+
+        function saveGroupNames() {
+            const g1 = document.getElementById('input-group1-name').value.trim();
+            const g2 = document.getElementById('input-group2-name').value.trim();
+            if (g1) state.group1Name = g1;
+            if (g2) state.group2Name = g2;
+            saveData();
+            updateScoreboard();
+            updateStatusBanner();
+            closeAdminModal();
+        }
+
+        /* ==========================================================================
+           9. CONFETTI
+           ========================================================================== */
+        let confettiInterval = null;
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function startConfetti() {
+            stopConfetti();
+            particles = [];
+            const colors = ['#6366F1', '#A855F7', '#10B981', '#F59E0B', '#EC4899'];
+            
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: Math.random() * 3 + 2,
+                    vx: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360,
+                    vRot: Math.random() * 4 - 2
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.vy;
+                    p.x += p.vx;
+                    p.rotation += p.vRot;
+
+                    if (p.y > canvas.height) p.y = -10;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+            }
+
+            confettiInterval = setInterval(draw, 1000 / 60);
+        }
+
+        function stopConfetti() {
+            if (confettiInterval) {
+                clearInterval(confettiInterval);
+                confettiInterval = null;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        /* ==========================================================================
+           10. INITIALISATION
+           ========================================================================== */
+        window.onload = function() {
+            loadStoredData();
+            loadQuestion();
+            
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+        };
+    </script>
+</body>
+</html>
